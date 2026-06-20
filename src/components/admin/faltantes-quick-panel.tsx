@@ -119,6 +119,7 @@ export function FaltantesQuickPanel({ items }: FaltantesQuickPanelProps) {
                     disabled={pending}
                     onCheckedChange={(checked) => handleToggle(item.code, Boolean(checked))}
                     aria-label={`Marcar ${item.code} como faltante`}
+                    className="origin-top-right scale-150 sm:scale-100"
                   />
                 </div>
                 <p className="truncate text-xs text-muted-foreground" title={item.teamName}>
