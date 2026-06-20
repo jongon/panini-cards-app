@@ -32,13 +32,16 @@ type CreateSupabaseServerClientOptions = {
 
 export async function getAdminEmail(): Promise<string> {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user?.email) {
+  // Verify the JWT LOCALLY via asymmetric signing keys (no round-trip to the
+  // Supabase Auth server). The email is carried as a claim, so `getClaims()`
+  // avoids the network call `getUser()` would make.
+  const { data, error } = await supabase.auth.getClaims();
+  const claims = error ? null : (data?.claims ?? null);
+  const email = claims && typeof claims.email === "string" ? claims.email : null;
+  if (!email) {
     throw new Error("No authenticated admin");
   }
-  return user.email;
+  return email;
 }
 
 export async function createSupabaseServerClient(options: CreateSupabaseServerClientOptions = {}) {
