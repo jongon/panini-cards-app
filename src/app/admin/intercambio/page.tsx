@@ -34,7 +34,7 @@ export default async function ExchangeSettingsPage() {
             href="/admin/cromos/faltantes"
             className="inline-flex text-xs font-medium text-primary hover:underline"
           >
-            Ir a faltantes
+            Ir a gestión de faltantes
           </Link>
         </div>
       </header>

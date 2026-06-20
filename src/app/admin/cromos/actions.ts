@@ -119,6 +119,7 @@ export async function toggleMissingStickerAction(
 
   await replaceMissingInventory(email, nextItems);
   revalidatePath("/admin/cromos/faltantes");
+  revalidatePath("/admin/faltantes");
 }
 
 export async function applyBulkMissingAction(
@@ -141,6 +142,7 @@ export async function applyBulkMissingAction(
 
   await replaceMissingInventory(email, toMissingRecord([...nextCodes]));
   revalidatePath("/admin/cromos/faltantes");
+  revalidatePath("/admin/faltantes");
 }
 
 export async function clearMissingInventoryAction(): Promise<void> {
@@ -148,6 +150,7 @@ export async function clearMissingInventoryAction(): Promise<void> {
 
   await clearMissingInventoryForAdmin(email);
   revalidatePath("/admin/cromos/faltantes");
+  revalidatePath("/admin/faltantes");
 }
 
 export async function markMissingStickerCompletedAction(stickerCode: string): Promise<void> {
@@ -155,4 +158,5 @@ export async function markMissingStickerCompletedAction(stickerCode: string): Pr
 
   await markStickersAsCompletedForAdmin(email, [MissingStickerCodeSchema.parse(stickerCode)]);
   revalidatePath("/admin/cromos/faltantes");
+  revalidatePath("/admin/faltantes");
 }

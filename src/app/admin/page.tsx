@@ -36,7 +36,8 @@ export default async function AdminPage() {
           <div className="flex items-center gap-2">
             <AdminNavLink href="/admin/archivadas">Archivadas</AdminNavLink>
             <AdminNavLink href="/admin/cromos">Cromos repetidos</AdminNavLink>
-            <AdminNavLink href="/admin/cromos/faltantes">Cromos faltantes</AdminNavLink>
+            <AdminNavLink href="/admin/faltantes">Faltantes</AdminNavLink>
+            <AdminNavLink href="/admin/cromos/faltantes">Gestión de faltantes</AdminNavLink>
             <AdminNavLink href="/admin/intercambio">Settings intercambio</AdminNavLink>
             <GenerateQrButton />
           </div>

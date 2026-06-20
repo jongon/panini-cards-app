@@ -214,7 +214,7 @@ export function MissingPanel({
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="font-display text-3xl tracking-tight text-foreground">
-                Cromos faltantes
+                Gestión de cromos faltantes
               </h1>
               <span className="inline-flex h-5 items-center rounded-full bg-brand px-2 text-xs font-medium text-brand-foreground">
                 {missingCount}/{totalStickers}
