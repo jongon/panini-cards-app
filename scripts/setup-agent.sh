@@ -29,8 +29,10 @@ if [[ ! -f "$MCP_SOURCE" ]]; then
 fi
 
 if ! command -v jq >/dev/null 2>&1; then
-  echo "ERROR: jq is required to generate MCP configs" >&2
-  exit 1
+  # jq is only needed for the local dev agent config. In environments without
+  # it (Vercel, CI, etc.) skip generation instead of failing the install.
+  echo "⚠ jq not found; skipping MCP config generation (dev-only)." >&2
+  exit 0
 fi
 
 # Translate one server entry from the neutral source into Claude Code format.
