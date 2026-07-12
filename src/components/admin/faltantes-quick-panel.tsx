@@ -37,6 +37,20 @@ export function FaltantesQuickPanel({ items }: FaltantesQuickPanelProps) {
     [items, missing],
   );
 
+  // Group by team, preserving the album order in which items arrive.
+  const groups = useMemo(() => {
+    const byTeam = new Map<string, FaltanteItem[]>();
+    for (const item of items) {
+      const bucket = byTeam.get(item.teamName);
+      if (bucket) {
+        bucket.push(item);
+      } else {
+        byTeam.set(item.teamName, [item]);
+      }
+    }
+    return Array.from(byTeam, ([teamName, teamItems]) => ({ teamName, items: teamItems }));
+  }, [items]);
+
   const handleToggle = (stickerCode: string, nextMissing: boolean) => {
     startTransition(async () => {
       try {
@@ -93,48 +107,63 @@ export function FaltantesQuickPanel({ items }: FaltantesQuickPanelProps) {
           No te falta ningún cromo 🎉
         </div>
       ) : (
-        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {items.map((item) => {
-            const isMissing = missing[item.code] === true;
+        <div className="flex flex-col gap-6">
+          {groups.map((group) => {
+            const groupMissingCount = group.items.filter((item) => missing[item.code]).length;
 
             return (
-              <li
-                key={item.code}
-                className={cn(
-                  "flex flex-col gap-1.5 rounded-lg border bg-background p-2.5 shadow-sm transition",
-                  isMissing ? "border-primary/35 bg-primary/5" : "border-border opacity-50",
-                )}
-              >
-                <div className="flex items-start justify-between gap-1.5">
-                  <span
-                    className={cn(
-                      "text-sm font-semibold leading-tight text-foreground",
-                      !isMissing && "line-through",
-                    )}
-                  >
-                    {item.code}
+              <section key={group.teamName} className="space-y-2.5">
+                <div className="flex items-center gap-2 border-b border-border pb-1.5">
+                  <h2 className="font-display text-lg tracking-tight text-foreground">
+                    {group.teamName}
+                  </h2>
+                  <span className="inline-flex h-5 items-center rounded-full bg-muted px-2 text-xs font-medium text-muted-foreground">
+                    {groupMissingCount}
                   </span>
-                  <Switch
-                    checked={isMissing}
-                    disabled={pending}
-                    onCheckedChange={(checked) => handleToggle(item.code, Boolean(checked))}
-                    aria-label={`Marcar ${item.code} como faltante`}
-                    className="origin-top-right scale-150 sm:scale-100"
-                  />
                 </div>
-                <p className="truncate text-xs text-muted-foreground" title={item.teamName}>
-                  {item.teamName}
-                </p>
-                <Badge
-                  variant="secondary"
-                  className="w-fit bg-muted text-[10px] text-muted-foreground"
-                >
-                  {STICKER_TYPE_LABEL[item.type]}
-                </Badge>
-              </li>
+                <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                  {group.items.map((item) => {
+                    const isMissing = missing[item.code] === true;
+
+                    return (
+                      <li
+                        key={item.code}
+                        className={cn(
+                          "flex flex-col gap-1.5 rounded-lg border bg-background p-2.5 shadow-sm transition",
+                          isMissing ? "border-primary/35 bg-primary/5" : "border-border opacity-50",
+                        )}
+                      >
+                        <div className="flex items-start justify-between gap-1.5">
+                          <span
+                            className={cn(
+                              "text-sm font-semibold leading-tight text-foreground",
+                              !isMissing && "line-through",
+                            )}
+                          >
+                            {item.code}
+                          </span>
+                          <Switch
+                            checked={isMissing}
+                            disabled={pending}
+                            onCheckedChange={(checked) => handleToggle(item.code, Boolean(checked))}
+                            aria-label={`Marcar ${item.code} como faltante`}
+                            className="origin-top-right scale-150 sm:scale-100"
+                          />
+                        </div>
+                        <Badge
+                          variant="secondary"
+                          className="w-fit bg-muted text-[10px] text-muted-foreground"
+                        >
+                          {STICKER_TYPE_LABEL[item.type]}
+                        </Badge>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
             );
           })}
-        </ul>
+        </div>
       )}
     </main>
   );
